@@ -1,0 +1,26 @@
+services:
+  pivot-mongodb:
+    image: mongo:7.0
+    container_name: pivot-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: db_pivot_customer
+    volumes:
+      - pivot_mongo_data:/data/db
+    networks:
+      - pivot-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pivot_mongo_data:
+    driver: local
+
+networks:
+  pivot-network:
+    driver: bridge

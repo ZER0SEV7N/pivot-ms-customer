@@ -1,0 +1,267 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+    "name": "Pivot Banking - ms-customer",
+    "description": "Postman Collection for testing pivot-ms-customer (CRUD + Strategy Validations + Reactive Streams).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Create Personal Customer (201 Created)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "if (jsonData.id) {",
+              "    pm.collectionVariables.set(\"customerId\", jsonData.id);",
+              "    pm.collectionVariables.set(\"personalDocNumber\", jsonData.documentNumber);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"profile\": \"STANDARD\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"71234567\",\n  \"firstName\": \"Daniel\",\n  \"lastName\": \"Singer\",\n  \"email\": \"daniel.singer@pivotbank.pe\",\n  \"phoneNumber\": \"+51987654321\",\n  \"address\": \"Av. Javier Prado Este 456, Lima\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/customers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "customers"
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. Create Business Customer (201 Created)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "var jsonData = pm.response.json();",
+              "if (jsonData.id) {",
+              "    pm.collectionVariables.set(\"businessCustomerId\", jsonData.id);",
+              "    pm.collectionVariables.set(\"businessDocNumber\", jsonData.documentNumber);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"profile\": \"STANDARD\",\n  \"documentType\": \"RUC\",\n  \"documentNumber\": \"20556677889\",\n  \"businessName\": \"Inversiones Tecnologicas Peru S.A.C.\",\n  \"email\": \"contacto@invtec.pe\",\n  \"phoneNumber\": \"+5114455667\",\n  \"address\": \"Av. Rivera Navarrete 789, San Isidro\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/customers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "customers"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. [Error 400] Create Business Customer with DNI (Strategy Validation)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerType\": \"BUSINESS\",\n  \"profile\": \"STANDARD\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"79998887\",\n  \"businessName\": \"Empresa Invalida S.A.C.\",\n  \"email\": \"error@empresa.pe\",\n  \"phoneNumber\": \"+51999888777\",\n  \"address\": \"Lima\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/customers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "customers"
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. [Error 409] Duplicate Document Number",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"profile\": \"STANDARD\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"71234567\",\n  \"firstName\": \"Otro\",\n  \"lastName\": \"Usuario\",\n  \"email\": \"otro@pivotbank.pe\",\n  \"phoneNumber\": \"+51911222333\",\n  \"address\": \"Lima\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/customers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "customers"
+          ]
+        }
+      }
+    },
+    {
+      "name": "5. Get All Customers (200 OK)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/customers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "customers"
+          ]
+        }
+      }
+    },
+    {
+      "name": "6. Get Customer by ID (200 OK)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/customers/{{customerId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "customers",
+            "{{customerId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "7. Get Customer by Document Number (200 OK)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/customers/document/{{personalDocNumber}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "customers",
+            "document",
+            "{{personalDocNumber}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "8. Update Customer by ID (200 OK)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerType\": \"PERSONAL\",\n  \"profile\": \"STANDARD\",\n  \"documentType\": \"DNI\",\n  \"documentNumber\": \"71234567\",\n  \"firstName\": \"Daniel Enrique\",\n  \"lastName\": \"Singer Rojas\",\n  \"email\": \"daniel.singer.updated@pivotbank.pe\",\n  \"phoneNumber\": \"+51987654321\",\n  \"address\": \"Av. Las Begonias 101, San Isidro\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/customers/{{customerId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "customers",
+            "{{customerId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "9. Delete Customer by ID (204 No Content)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/customers/{{customerId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "customers",
+            "{{customerId}}"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "customerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "businessCustomerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "personalDocNumber",
+      "value": "71234567",
+      "type": "string"
+    },
+    {
+      "key": "businessDocNumber",
+      "value": "20556677889",
+      "type": "string"
+    }
+  ]
+}
