@@ -23,11 +23,11 @@ public class Customer {
     private String documentNumber;
     private String firstName;
     private String lastName;
-    private String businnessName;
+    private String businessName;
     private String email;
     private String phoneNumber;
     private String address;
     private CustomerStatus status;
     private Instant createdAt;
-    private Instant updateAt;
+    private Instant updatedAt;
 }
