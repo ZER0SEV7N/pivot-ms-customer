@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ms-customer
+
+  # Call the config server to get the configuration for this application
+  config:
+    import: "optional:configserver:http://localhost:8888"

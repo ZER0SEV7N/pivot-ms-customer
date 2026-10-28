@@ -1,0 +1,364 @@
+openapi: 3.0.3
+info:
+  title: Pivot Banking System - Customer Microservice API
+  description: |
+    RESTful Reactive API for managing Personal and Business bank customers.
+    Implements Hexagonal Architecture, RxJava 3, and MongoDB persistence.
+  version: 1.0.0
+  contact:
+    name: Pivot Banking Architecture Team
+servers:
+  - url: http://localhost:8081/api/v1
+    description: Local Development Server (ms-customer)
+
+tags:
+  - name: Customers
+    description: Operations related to bank customers management (CRUD & Queries)
+
+paths:
+  /customers:
+    post:
+      tags:
+        - Customers
+      summary: Create a new bank customer
+      description: Registers either a PERSONAL or BUSINESS customer applying validation strategies.
+      operationId: createCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+            examples:
+              PersonalCustomerExample:
+                summary: Personal Customer (DNI)
+                value:
+                  customerType: PERSONAL
+                  profile: STANDARD
+                  documentType: DNI
+                  documentNumber: "71234567"
+                  firstName: "Daniel"
+                  lastName: "Singer"
+                  email: "daniel.singer@email.com"
+                  phoneNumber: "+51987654321"
+                  address: "Av. Javier Prado 123, Lima"
+              BusinessCustomerExample:
+                summary: Business Customer (RUC)
+                value:
+                  customerType: BUSINESS
+                  profile: STANDARD
+                  documentType: RUC
+                  documentNumber: "20512345678"
+                  businessName: "Tech Solutions Peru S.A.C."
+                  email: "contact@techsolutions.pe"
+                  phoneNumber: "+5114567890"
+                  address: "Av. Rivera Navarrete 456, San Isidro"
+      responses:
+        '201':
+          description: Customer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        '400':
+          description: Invalid input payload or business validation rule violation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: A customer with the specified document number already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - Customers
+      summary: Retrieve all customers
+      description: Returns a reactive stream of all registered bank customers.
+      operationId: getAllCustomers
+      responses:
+        '200':
+          description: List of customers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerResponse'
+
+  /customers/{id}:
+    get:
+      tags:
+        - Customers
+      summary: Get customer by ID
+      description: Retrieves a specific customer by its unique MongoDB identifier.
+      operationId: getCustomerById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier of the customer
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Customer found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - Customers
+      summary: Update an existing customer
+      description: Updates customer details by ID applying domain validation rules.
+      operationId: updateCustomer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier of the customer to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+      responses:
+        '200':
+          description: Customer updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        '400':
+          description: Validation error in request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Customers
+      summary: Delete a customer by ID
+      description: Deletes a customer record from the database by its ID.
+      operationId: deleteCustomer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier of the customer to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Customer deleted successfully (No Content)
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /customers/document/{documentNumber}:
+    get:
+      tags:
+        - Customers
+      summary: Get customer by Document Number
+      description: Retrieves a customer using their unique identification document (DNI, CE, PASSPORT, or RUC).
+      operationId: getCustomerByDocumentNumber
+      parameters:
+        - name: documentNumber
+          in: path
+          required: true
+          description: Unique document number of the customer
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Customer found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CustomerType:
+      type: string
+      description: Type of bank customer
+      enum:
+        - PERSONAL
+        - BUSINESS
+
+    CustomerProfile:
+      type: string
+      description: Customer classification profile (STANDARD for Part I, VIP/PYME for Part II)
+      enum:
+        - STANDARD
+        - VIP
+        - PYME
+      default: STANDARD
+
+    DocumentType:
+      type: string
+      description: Official identification document type
+      enum:
+        - DNI
+        - CE
+        - PASSPORT
+        - RUC
+
+    CustomerStatus:
+      type: string
+      description: Operational status of the customer
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - BLOCKED
+      default: ACTIVE
+
+    CustomerRequest:
+      type: object
+      required:
+        - customerType
+        - documentType
+        - documentNumber
+        - email
+        - phoneNumber
+      properties:
+        customerType:
+          $ref: '#/components/schemas/CustomerType'
+        profile:
+          $ref: '#/components/schemas/CustomerProfile'
+        documentType:
+          $ref: '#/components/schemas/DocumentType'
+        documentNumber:
+          type: string
+          minLength: 8
+          maxLength: 15
+          pattern: '^[0-9A-Za-z]+$'
+          example: "71234567"
+        firstName:
+          type: string
+          maxLength: 100
+          description: Required when customerType is PERSONAL
+          example: "Daniel"
+        lastName:
+          type: string
+          maxLength: 100
+          description: Required when customerType is PERSONAL
+          example: "Singer"
+        businessName:
+          type: string
+          maxLength: 150
+          description: Required when customerType is BUSINESS
+          example: "Tech Solutions Peru S.A.C."
+        email:
+          type: string
+          format: email
+          maxLength: 120
+          example: "daniel.singer@email.com"
+        phoneNumber:
+          type: string
+          minLength: 7
+          maxLength: 20
+          example: "+51987654321"
+        address:
+          type: string
+          maxLength: 250
+          example: "Av. Javier Prado 123, Lima"
+        status:
+          $ref: '#/components/schemas/CustomerStatus'
+
+    CustomerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "671e9b4a8f1b2c3d4e5f6a7b"
+        customerType:
+          $ref: '#/components/schemas/CustomerType'
+        profile:
+          $ref: '#/components/schemas/CustomerProfile'
+        documentType:
+          $ref: '#/components/schemas/DocumentType'
+        documentNumber:
+          type: string
+          example: "71234567"
+        firstName:
+          type: string
+          nullable: true
+          example: "Daniel"
+        lastName:
+          type: string
+          nullable: true
+          example: "Singer"
+        businessName:
+          type: string
+          nullable: true
+          example: null
+        email:
+          type: string
+          example: "daniel.singer@email.com"
+        phoneNumber:
+          type: string
+          example: "+51987654321"
+        address:
+          type: string
+          example: "Av. Javier Prado 123, Lima"
+        status:
+          $ref: '#/components/schemas/CustomerStatus'
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-10-27T16:00:00"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2026-10-27T16:00:00"
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-10-27T16:05:12"
+        status:
+          type: integer
+          example: 400
+        error:
+          type: string
+          example: "Bad Request"
+        message:
+          type: string
+          example: "Business customers must be registered with a RUC document and businessName"
+        path:
+          type: string
+          example: "/api/v1/customers"
