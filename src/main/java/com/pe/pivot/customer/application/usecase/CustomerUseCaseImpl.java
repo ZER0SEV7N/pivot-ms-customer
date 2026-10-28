@@ -9,6 +9,7 @@ import com.pe.pivot.customer.domain.model.CustomerStatus;
 import com.pe.pivot.customer.domain.port.in.*;
 import com.pe.pivot.customer.domain.port.out.CustomerRepositoryPort;
 import com.pe.pivot.customer.domain.strategy.CustomerValidationStrategy;
+import com.pe.pivot.customer.infrastructure.util.DataMaskingUtil;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
