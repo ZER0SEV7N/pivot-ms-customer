@@ -179,6 +179,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /customers/{id}/reactivate:
+    patch:
+      tags:
+        - Customers
+      summary: Reactivate an INACTIVE or BLOCKED customer
+      description: Restores a soft-deleted (INACTIVE) or BLOCKED customer back to ACTIVE status.
+      operationId: reactivateCustomer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Customer reactivated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        '400':
+          description: Customer is already ACTIVE
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /customers/document/{documentNumber}:
     get:
       tags:
