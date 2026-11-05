@@ -35,3 +35,7 @@ build/
 ### Local Environment & Secrets ###
 .env
 *.env
+
+
+*.bkp
+.$ms-customer Diagrams.drawio.bkp
