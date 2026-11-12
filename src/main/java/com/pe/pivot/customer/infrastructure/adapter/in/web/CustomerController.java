@@ -35,10 +35,9 @@ public class CustomerController {
    */
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public Single<ResponseEntity<CustomerResponse>> createCustomer(@Valid @RequestBody CustomerRequest request){
-      return createCustomerUseCase.create(mapper.toDomain(request))
-              .map(mapper::toResponse)
-              .map(ResponseEntity::ok);
+  public Single<CustomerResponse> createCustomer(@Valid @RequestBody CustomerRequest request) {
+    return createCustomerUseCase.create(mapper.toDomain(request))
+            .map(mapper::toResponse);
   }
 
   /**
