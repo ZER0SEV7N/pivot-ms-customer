@@ -20,42 +20,44 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class RetrieveCustomerUseCaseImpl implements RetrieveCustomerUseCase {
-    private final CustomerRepositoryPort repositoryPort;
-    private final FindCustomerByIdUseCase findCustomerByIdUseCase;
+  private final CustomerRepositoryPort repositoryPort;
+  private final FindCustomerByIdUseCase findCustomerByIdUseCase;
 
-    /**
-     * Retrieves all registered customers reactively.
-     *
-     * @return Flowable emitting all customers
-     */
-    @Override
-    public Flowable<Customer> findAll() {
-        log.debug("Retrieving all customers");
-        return repositoryPort.findAll();
-    }
+  /**
+   * Retrieves all registered customers reactively.
+   *
+   * @return Flowable emitting all customers
+   */
+  @Override
+  public Flowable<Customer> findAll() {
+    log.debug("Retrieving all customers");
+    return repositoryPort.findAll();
+  }
 
-    /**
-     * Finds a customer by its unique ID.
-     *
-     * @param id customer identifier
-     * @return Single emitting the found customer or CustomerNotFoundException
-     */
-    @Override
-    public Single<Customer> findById(String id) {
-        return findCustomerByIdUseCase.findById(id);
-    }
+  /**
+   * Finds a customer by its unique ID.
+   *
+   * @param id customer identifier
+   * @return Single emitting the found customer or CustomerNotFoundException
+   */
+  @Override
+  public Single<Customer> findById(String id) {
+    return findCustomerByIdUseCase.findById(id);
+  }
 
-    /**
-     * Finds a customer by its identification document number.
-     *
-     * @param documentNumber official document number
-     * @return Single emitting the found customer or CustomerNotFoundException
-     */
-    @Override
-    public Single<Customer> findByDocumentNumber(String documentNumber) {
-        log.debug("Searching customer by documentNumber: {}",
-                DataMaskingUtil.maskDocument(documentNumber));
-        return repositoryPort.findByDocumentNumber(documentNumber)
-                .switchIfEmpty(Single.error(new CustomerNotFoundException("Customer not found with document number: " + DataMaskingUtil.maskDocument(documentNumber))));
-    }
+  /**
+   * Finds a customer by its identification document number.
+   *
+   * @param documentNumber official document number
+   * @return Single emitting the found customer or CustomerNotFoundException
+   */
+  @Override
+  public Single<Customer> findByDocumentNumber(String documentNumber) {
+    log.debug("Searching customer by documentNumber: {}",
+            DataMaskingUtil.maskDocument(documentNumber));
+    return repositoryPort.findByDocumentNumber(documentNumber)
+            .switchIfEmpty(Single.error(new CustomerNotFoundException(
+                    "Customer not found with document number: "
+                            + DataMaskingUtil.maskDocument(documentNumber))));
+  }
 }

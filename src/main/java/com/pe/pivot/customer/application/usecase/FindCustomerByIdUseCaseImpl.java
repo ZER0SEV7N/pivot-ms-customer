@@ -18,18 +18,19 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class FindCustomerByIdUseCaseImpl implements FindCustomerByIdUseCase {
-    private final CustomerRepositoryPort repositoryPort;
+  private final CustomerRepositoryPort repositoryPort;
 
-    /**
-     * Finds a customer by its unique ID.
-     *
-     * @param id customer identifier
-     * @return Single emitting the found customer or CustomerNotFoundException
-     */
-    @Override
-    public Single<Customer> findById(String id) {
-        log.debug("Searching customer by ID: {}", id);
-        return repositoryPort.findById(id)
-                .switchIfEmpty(Single.error(new CustomerNotFoundException("Customer not found with ID: " + id)));
-    }
+  /**
+   * Finds a customer by its unique ID.
+   *
+   * @param id customer identifier
+   * @return Single emitting the found customer or CustomerNotFoundException
+   */
+  @Override
+  public Single<Customer> findById(String id) {
+    log.debug("Searching customer by ID: {}", id);
+    return repositoryPort.findById(id)
+            .switchIfEmpty(Single.error(
+                    new CustomerNotFoundException("Customer not found with ID: " + id)));
+  }
 }

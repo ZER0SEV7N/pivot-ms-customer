@@ -9,7 +9,9 @@ import io.reactivex.rxjava3.core.Single;
  */
 public interface RetrieveCustomerUseCase {
 
-    Flowable<Customer> findAll();
-    Single<Customer> findById(String id);
-    Single<Customer> findByDocumentNumber(String documentNumber);
+  Flowable<Customer> findAll();
+
+  Single<Customer> findById(String id);
+
+  Single<Customer> findByDocumentNumber(String documentNumber);
 }

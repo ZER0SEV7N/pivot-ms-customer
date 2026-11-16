@@ -4,8 +4,12 @@ import com.pe.pivot.customer.domain.model.CustomerProfile;
 import com.pe.pivot.customer.domain.model.CustomerStatus;
 import com.pe.pivot.customer.domain.model.CustomerType;
 import com.pe.pivot.customer.domain.model.DocumentType;
-import jakarta.validation.constraints.*;
-import lombok.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 /**
  * Immutable Request DTO using Java 17 Record, aligned with the OpenAPI 3.0 CustomerRequest schema.
@@ -39,8 +43,7 @@ public record CustomerRequest(
         @Email(message = "email must be a valid email address")
         String email,
 
-        @NotBlank(message = "phoneNumber is required")
-        @Size(min = 7, max = 20)
+        @NotBlank(message = "phoneNumber is required") @Size(min = 7, max = 20)
         String phoneNumber,
 
         @Size(max = 250)

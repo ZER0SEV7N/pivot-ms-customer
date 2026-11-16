@@ -9,7 +9,6 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Component;
 import reactor.adapter.rxjava.RxJava3Adapter;
 
@@ -20,87 +19,87 @@ import reactor.adapter.rxjava.RxJava3Adapter;
 @RequiredArgsConstructor
 public class CustomerPersistenceAdapter implements CustomerRepositoryPort {
 
-    private final ReactiveCustomerMongoRepository mongoRepository;
-    private final CustomerPersistenceMapper mapper;
+  private final ReactiveCustomerMongoRepository mongoRepository;
+  private final CustomerPersistenceMapper mapper;
 
-    /**
-     * Saves a customer to the database.
-     *
-     * @param customer - the domain customer to save
-     * @return - Single emitting the persisted customer
-     */
-    @Override
-    public Single<Customer> save(Customer customer) {
-        return RxJava3Adapter.monoToSingle(
-                mongoRepository.save(mapper.toDocument(customer))
-                        .map(mapper::toDomain)
-        );
-    }
+  /**
+   * Saves a customer to the database.
+   *
+   * @param customer - the domain customer to save
+   * @return - Single emitting the persisted customer
+   */
+  @Override
+  public Single<Customer> save(Customer customer) {
+    return RxJava3Adapter.monoToSingle(
+            mongoRepository.save(mapper.toDocument(customer))
+                    .map(mapper::toDomain)
+    );
+  }
 
-    /**
-     * Retrieves all customers from the database.
-     *
-     * @return - Flowable emitting all customers
-     */
-    @Override
-    public Flowable<Customer> findAll() {
-        return RxJava3Adapter.fluxToFlowable(
-                mongoRepository.findAll()
-                        .map(mapper::toDomain)
-        );
-    }
+  /**
+   * Retrieves all customers from the database.
+   *
+   * @return - Flowable emitting all customers
+   */
+  @Override
+  public Flowable<Customer> findAll() {
+    return RxJava3Adapter.fluxToFlowable(
+            mongoRepository.findAll()
+                    .map(mapper::toDomain)
+    );
+  }
 
-    /**
-     * Finds a customer by their ID.
-     *
-     * @param id - the ID of the customer to find
-     * @return - Maybe emitting the found customer, or empty if not found
-     */
-    @Override
-    public Maybe<Customer> findById(String id) {
-        return RxJava3Adapter.monoToMaybe(
-                mongoRepository.findById(id)
-                        .map(mapper::toDomain)
-        );
-    }
+  /**
+   * Finds a customer by their ID.
+   *
+   * @param id - the ID of the customer to find
+   * @return - Maybe emitting the found customer, or empty if not found
+   */
+  @Override
+  public Maybe<Customer> findById(String id) {
+    return RxJava3Adapter.monoToMaybe(
+            mongoRepository.findById(id)
+                    .map(mapper::toDomain)
+    );
+  }
 
-    /**
-     * Finds a customer by their document number.
-     *
-     * @param documentNumber - the document number of the customer to find
-     * @return - Maybe emitting the found customer, or empty if not found
-     */
-    @Override
-    public Maybe<Customer> findByDocumentNumber(String documentNumber) {
-        return RxJava3Adapter.monoToMaybe(
-                mongoRepository.findByDocumentNumber(documentNumber)
-                        .map(mapper::toDomain)
-        );
-    }
+  /**
+   * Finds a customer by their document number.
+   *
+   * @param documentNumber - the document number of the customer to find
+   * @return - Maybe emitting the found customer, or empty if not found
+   */
+  @Override
+  public Maybe<Customer> findByDocumentNumber(String documentNumber) {
+    return RxJava3Adapter.monoToMaybe(
+            mongoRepository.findByDocumentNumber(documentNumber)
+                    .map(mapper::toDomain)
+    );
+  }
 
-    /**
-     * Checks if a customer exists by their document number.
-     *
-     * @param documentNumber - the document number to check for existence
-     * @return - Single emitting true if exists, false otherwise
-     */
-    @Override
-    public Single<Boolean> existsByDocumentNumber(String documentNumber) {
-        return RxJava3Adapter.monoToSingle(
-                mongoRepository.existsByDocumentNumber(documentNumber)
-        );
-    }
+  /**
+   * Checks if a customer exists by their document number.
+   *
+   * @param documentNumber - the document number to check for existence
+   * @return - Single emitting true if exists, false otherwise
+   */
+  @Override
+  public Single<Boolean> existsByDocumentNumber(String documentNumber) {
+    return RxJava3Adapter.monoToSingle(
+            mongoRepository.existsByDocumentNumber(documentNumber)
+    );
+  }
 
-    /**
-     * Deletes a customer by their ID.
-     *
-     * @param id - the ID of the customer to delete
-     * @return - Completable that completes when deletion is done
-     */
-    @Override
-    public Completable deleteById(String id) {
-        return RxJava3Adapter.monoToCompletable(
-                mongoRepository.deleteById(id)
-        );
-    }
+  /**
+   * Deletes a customer by their ID.
+   *
+   * @param id - the ID of the customer to delete
+   * @return - Completable that completes when deletion is done
+   */
+  @Override
+  public Completable deleteById(String id) {
+    return RxJava3Adapter.monoToCompletable(
+            mongoRepository.deleteById(id)
+    );
+  }
 }

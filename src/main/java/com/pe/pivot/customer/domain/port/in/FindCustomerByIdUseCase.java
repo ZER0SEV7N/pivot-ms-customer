@@ -9,5 +9,5 @@ import io.reactivex.rxjava3.core.Single;
  * same lookup without duplicating repository and error-handling logic.
  */
 public interface FindCustomerByIdUseCase {
-    Single<Customer> findById(String id);
+  Single<Customer> findById(String id);
 }

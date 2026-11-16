@@ -13,13 +13,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class StrategyConfig {
 
-    @Bean
-    public CustomerValidationStrategy personalCustomerStrategy() {
-        return new PersonalCustomerStrategy();
-    }
+  @Bean
+  public CustomerValidationStrategy personalCustomerStrategy() {
+    return new PersonalCustomerStrategy();
+  }
 
-    @Bean
-    public CustomerValidationStrategy businessCustomerStrategy() {
-        return new BusinessCustomerStrategy();
-    }
+  @Bean
+  public CustomerValidationStrategy businessCustomerStrategy() {
+    return new BusinessCustomerStrategy();
+  }
 }

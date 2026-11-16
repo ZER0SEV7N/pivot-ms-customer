@@ -4,12 +4,11 @@ import com.pe.pivot.customer.domain.model.CustomerProfile;
 import com.pe.pivot.customer.domain.model.CustomerStatus;
 import com.pe.pivot.customer.domain.model.CustomerType;
 import com.pe.pivot.customer.domain.model.DocumentType;
-import lombok.*;
-
 import java.time.Instant;
+import lombok.Builder;
 
 /**
- * Immutable Response DTO using Java 17 Record, aligned with the OpenAPI 3.0 CustomerResponse schema.
+ * Immutable Response DTO using Java 17 Record, aligned with the OpenAPI 3.0 schema.
  */
 @Builder
 public record CustomerResponse(

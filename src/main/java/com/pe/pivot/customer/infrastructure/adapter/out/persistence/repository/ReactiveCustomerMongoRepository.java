@@ -10,9 +10,10 @@ import reactor.core.publisher.Mono;
  * Uses derived query methods without @Query annotation as required.
  */
 @Repository
-public interface ReactiveCustomerMongoRepository extends ReactiveMongoRepository<CustomerDocument, String> {
+public interface ReactiveCustomerMongoRepository
+        extends ReactiveMongoRepository<CustomerDocument, String> {
 
-    Mono<CustomerDocument> findByDocumentNumber(String documentNumber);
+  Mono<CustomerDocument> findByDocumentNumber(String documentNumber);
 
-    Mono<Boolean> existsByDocumentNumber(String documentNumber);
+  Mono<Boolean> existsByDocumentNumber(String documentNumber);
 }
