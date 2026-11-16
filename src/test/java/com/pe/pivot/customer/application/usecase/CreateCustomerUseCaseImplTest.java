@@ -1,79 +1,198 @@
 package com.pe.pivot.customer.application.usecase;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+
+import com.pe.pivot.customer.domain.exception.BusinessRuleException;
 import com.pe.pivot.customer.domain.exception.DuplicateCustomerException;
-import com.pe.pivot.customer.domain.model.*;
+import com.pe.pivot.customer.domain.model.Customer;
+import com.pe.pivot.customer.domain.model.CustomerProfile;
+import com.pe.pivot.customer.domain.model.CustomerStatus;
+import com.pe.pivot.customer.domain.model.CustomerType;
+import com.pe.pivot.customer.domain.model.DocumentType;
 import com.pe.pivot.customer.domain.port.out.CustomerRepositoryPort;
+import com.pe.pivot.customer.domain.strategy.CustomerValidationStrategy;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.time.Instant;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Unit test suite for CreateCustomerUseCaseImpl.
- * Validates customer registration, uniqueness verification, and reactive error handling using AAA pattern.
+ * Unit tests for {@link CreateCustomerUseCaseImpl}.
+ * Each test follows the Arrange-Act-Assert pattern and validates the reactive stream
+ * through the RxJava 3 TestObserver to avoid false positives.
  */
-class CreateCustomerUseCaseTest {
+@ExtendWith(MockitoExtension.class)
+class CreateCustomerUseCaseImplTest {
 
   @Mock
-  private CustomerRepositoryPort customerRepository;
+  private CustomerRepositoryPort repositoryPort;
 
-  @InjectMocks
-  private CreateCustomerUseCaseImpl createCustomerUseCase;
+  @Mock
+  private CustomerValidationStrategy strategy;
 
-  private Customer sampleCustomer;
+  private CreateCustomerUseCaseImpl useCase;
 
   @BeforeEach
   void setUp() {
-    MockitoAnnotations.openMocks(this);
-    sampleCustomer = Customer.builder()
-            .id("65f1a2b3c4d5e6f7a8b9c0d1")
+    useCase = new CreateCustomerUseCaseImpl(repositoryPort, List.of(strategy));
+  }
+
+  private Customer personalCustomer() {
+    return Customer.builder()
             .customerType(CustomerType.PERSONAL)
-            .profile(CustomerProfile.VIP)
             .documentType(DocumentType.DNI)
-            .documentNumber("44556677")
-            .firstName("Daniel")
-            .lastName("Singer")
-            .email("danielsinger07@hotmail.com")
-            .status(CustomerStatus.ACTIVE)
-            .createdAt(Instant.now())
-            .updatedAt(Instant.now())
+            .documentNumber("12345678")
+            .firstName("Jane")
+            .lastName("Doe")
+            .email("jane.doe@example.com")
+            .phoneNumber("999888777")
+            .address("Lima")
             .build();
   }
 
   @Test
-  @DisplayName("Should successfully create a customer when document number does not exist")
-  void shouldCreateCustomerSuccessfully() {
+  @DisplayName("should create a customer applying default profile and status")
+  void shouldCreateCustomerApplyingDefaults() {
     // Arrange
-    when(customerRepository.existsByDocumentNumber(anyString())).thenReturn(Single.just(false));
-    when(customerRepository.save(any(Customer.class))).thenReturn(Single.just(sampleCustomer));
+    Customer customer = personalCustomer();
+    Customer saved = personalCustomer();
+    saved.setId("customer-1");
+    saved.setProfile(CustomerProfile.STANDARD);
+    saved.setStatus(CustomerStatus.ACTIVE);
 
-    // Act & Assert
-    createCustomerUseCase.create(sampleCustomer)
-            .test()
+    when(strategy.supports(CustomerType.PERSONAL)).thenReturn(true);
+    when(strategy.validate(customer)).thenReturn(Completable.complete());
+    when(repositoryPort.existsByDocumentNumber("12345678")).thenReturn(Single.just(false));
+    when(repositoryPort.save(customer)).thenReturn(Single.just(saved));
+
+    // Act
+    Single<Customer> result = useCase.create(customer);
+
+    // Assert
+    result.test()
             .assertNoErrors()
-            .assertValue(saved -> saved.getDocumentNumber().equals("44556677"))
+            .assertValue(saved)
             .assertComplete();
+    assertEquals(CustomerProfile.STANDARD, customer.getProfile());
+    assertEquals(CustomerStatus.ACTIVE, customer.getStatus());
+    assertNotNull(customer.getCreatedAt());
+    assertEquals(customer.getCreatedAt(), customer.getUpdatedAt());
+    verify(repositoryPort).save(customer);
   }
 
   @Test
-  @DisplayName("Should throw DuplicateCustomerException when document number already exists")
-  void shouldFailWhenCustomerDocumentAlreadyExists() {
+  @DisplayName("should preserve the profile and status supplied by the caller")
+  void shouldPreserveProvidedProfileAndStatus() {
     // Arrange
-    when(customerRepository.existsByDocumentNumber(anyString())).thenReturn(Single.just(true));
+    Customer customer = personalCustomer();
+    customer.setProfile(CustomerProfile.VIP);
+    customer.setStatus(CustomerStatus.BLOCKED);
 
-    // Act & Assert
-    createCustomerUseCase.create(sampleCustomer)
-            .test()
+    when(strategy.supports(CustomerType.PERSONAL)).thenReturn(true);
+    when(strategy.validate(customer)).thenReturn(Completable.complete());
+    when(repositoryPort.existsByDocumentNumber("12345678")).thenReturn(Single.just(false));
+    when(repositoryPort.save(customer)).thenReturn(Single.just(customer));
+
+    // Act
+    Single<Customer> result = useCase.create(customer);
+
+    // Assert
+    result.test()
+            .assertNoErrors()
+            .assertValue(customer)
+            .assertComplete();
+    assertEquals(CustomerProfile.VIP, customer.getProfile());
+    assertEquals(CustomerStatus.BLOCKED, customer.getStatus());
+  }
+
+  @Test
+  @DisplayName("should reject a customer whose document number already exists")
+  void shouldRejectDuplicateDocumentNumber() {
+    // Arrange
+    Customer customer = personalCustomer();
+    when(strategy.supports(CustomerType.PERSONAL)).thenReturn(true);
+    when(strategy.validate(customer)).thenReturn(Completable.complete());
+    when(repositoryPort.existsByDocumentNumber("12345678")).thenReturn(Single.just(true));
+
+    // Act
+    Single<Customer> result = useCase.create(customer);
+
+    // Assert
+    result.test()
+            .assertValueCount(0)
             .assertError(DuplicateCustomerException.class)
             .assertNotComplete();
+    verify(repositoryPort, never()).save(any());
+  }
+
+  @Test
+  @DisplayName("should reject an unsupported customer type")
+  void shouldRejectUnsupportedCustomerType() {
+    // Arrange
+    Customer customer = personalCustomer();
+    when(strategy.supports(CustomerType.PERSONAL)).thenReturn(false);
+    when(repositoryPort.existsByDocumentNumber("12345678")).thenReturn(Single.just(false));
+
+    // Act
+    Single<Customer> result = useCase.create(customer);
+
+    // Assert
+    result.test()
+            .assertValueCount(0)
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Unsupported customer type: PERSONAL".equals(error.getMessage()));
+    verify(strategy, never()).validate(any());
+    verify(repositoryPort, never()).save(any());
+  }
+
+  @Test
+  @DisplayName("should propagate the validation strategy failure")
+  void shouldPropagateValidationFailure() {
+    // Arrange
+    Customer customer = personalCustomer();
+    when(strategy.supports(CustomerType.PERSONAL)).thenReturn(true);
+    when(strategy.validate(customer)).thenReturn(
+            Completable.error(new BusinessRuleException("Invalid personal data.")));
+    when(repositoryPort.existsByDocumentNumber("12345678")).thenReturn(Single.just(false));
+
+    // Act
+    Single<Customer> result = useCase.create(customer);
+
+    // Assert
+    result.test()
+            .assertValueCount(0)
+            .assertError(error -> error instanceof BusinessRuleException && "Invalid personal data.".equals(error.getMessage()));
+    verify(repositoryPort, never()).save(any());
+  }
+
+  @Test
+  @DisplayName("should propagate the persistence failure")
+  void shouldPropagatePersistenceFailure() {
+    // Arrange
+    Customer customer = personalCustomer();
+    when(strategy.supports(CustomerType.PERSONAL)).thenReturn(true);
+    when(strategy.validate(customer)).thenReturn(Completable.complete());
+    when(repositoryPort.existsByDocumentNumber("12345678")).thenReturn(Single.just(false));
+    when(repositoryPort.save(customer)).thenReturn(
+            Single.error(new IllegalStateException("Database unavailable.")));
+
+    // Act
+    Single<Customer> result = useCase.create(customer);
+
+    // Assert
+    result.test()
+            .assertValueCount(0)
+            .assertError(error -> error instanceof IllegalStateException && "Database unavailable.".equals(error.getMessage()));
   }
 }
