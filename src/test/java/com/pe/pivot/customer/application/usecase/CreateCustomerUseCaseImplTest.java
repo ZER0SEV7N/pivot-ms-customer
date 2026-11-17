@@ -62,18 +62,18 @@ class CreateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should create a customer applying default profile and status")
+  @DisplayName("Should create a customer applying default profile and status")
   void shouldCreateCustomerApplyingDefaults() {
     // Arrange
-    Customer customer = personalCustomer();
     Customer saved = personalCustomer();
     saved.setId("customer-1");
     saved.setProfile(CustomerProfile.STANDARD);
     saved.setStatus(CustomerStatus.ACTIVE);
 
     when(strategy.supports(CustomerType.PERSONAL)).thenReturn(true);
-    when(strategy.validate(customer)).thenReturn(Completable.complete());
     when(repositoryPort.existsByDocumentNumber("12345678")).thenReturn(Single.just(false));
+    Customer customer = personalCustomer();
+    when(strategy.validate(customer)).thenReturn(Completable.complete());
     when(repositoryPort.save(customer)).thenReturn(Single.just(saved));
 
     // Act
@@ -92,7 +92,7 @@ class CreateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should preserve the profile and status supplied by the caller")
+  @DisplayName("Should preserve the profile and status supplied by the caller")
   void shouldPreserveProvidedProfileAndStatus() {
     // Arrange
     Customer customer = personalCustomer();
@@ -117,7 +117,7 @@ class CreateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should reject a customer whose document number already exists")
+  @DisplayName("Should reject a customer whose document number already exists")
   void shouldRejectDuplicateDocumentNumber() {
     // Arrange
     Customer customer = personalCustomer();
@@ -137,7 +137,7 @@ class CreateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should reject an unsupported customer type")
+  @DisplayName("Should reject an unsupported customer type")
   void shouldRejectUnsupportedCustomerType() {
     // Arrange
     Customer customer = personalCustomer();
@@ -157,7 +157,7 @@ class CreateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should propagate the validation strategy failure")
+  @DisplayName("Should propagate the validation strategy failure")
   void shouldPropagateValidationFailure() {
     // Arrange
     Customer customer = personalCustomer();
@@ -172,12 +172,14 @@ class CreateCustomerUseCaseImplTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof BusinessRuleException && "Invalid personal data.".equals(error.getMessage()));
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Invalid personal data."
+                            .equals(error.getMessage()));
     verify(repositoryPort, never()).save(any());
   }
 
   @Test
-  @DisplayName("should propagate the persistence failure")
+  @DisplayName("Should propagate the persistence failure")
   void shouldPropagatePersistenceFailure() {
     // Arrange
     Customer customer = personalCustomer();
@@ -193,6 +195,8 @@ class CreateCustomerUseCaseImplTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof IllegalStateException && "Database unavailable.".equals(error.getMessage()));
+            .assertError(error -> error instanceof IllegalStateException
+                    && "Database unavailable."
+                            .equals(error.getMessage()));
   }
 }

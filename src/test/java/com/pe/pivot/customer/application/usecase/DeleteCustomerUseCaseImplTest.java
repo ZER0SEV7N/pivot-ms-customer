@@ -54,7 +54,7 @@ class DeleteCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should logically deactivate an active customer")
+  @DisplayName("Should logically deactivate an active customer")
   void shouldDeactivateActiveCustomer() {
     // Arrange
     Customer customer = customerWithStatus(CustomerStatus.ACTIVE);
@@ -74,7 +74,7 @@ class DeleteCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should reject deleting an already inactive customer")
+  @DisplayName("Should reject deleting an already inactive customer")
   void shouldRejectAlreadyInactiveCustomer() {
     // Arrange
     Customer customer = customerWithStatus(CustomerStatus.INACTIVE);
@@ -85,13 +85,15 @@ class DeleteCustomerUseCaseImplTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof BusinessRuleException && "Customer is already INACTIVE.".equals(error.getMessage()))
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Customer is already INACTIVE."
+                            .equals(error.getMessage()))
             .assertNotComplete();
     verify(repositoryPort, never()).save(any());
   }
 
   @Test
-  @DisplayName("should propagate the not found error")
+  @DisplayName("Should propagate the not found error")
   void shouldPropagateNotFoundError() {
     // Arrange
     when(findCustomerByIdUseCase.findById("missing")).thenReturn(
@@ -102,12 +104,14 @@ class DeleteCustomerUseCaseImplTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof CustomerNotFoundException && "Customer not found with ID: missing".equals(error.getMessage()));
+            .assertError(error -> error instanceof CustomerNotFoundException
+                    && "Customer not found with ID: missing"
+                            .equals(error.getMessage()));
     verifyNoInteractions(repositoryPort);
   }
 
   @Test
-  @DisplayName("should propagate the persistence failure")
+  @DisplayName("Should propagate the persistence failure")
   void shouldPropagatePersistenceFailure() {
     // Arrange
     Customer customer = customerWithStatus(CustomerStatus.ACTIVE);
@@ -120,7 +124,9 @@ class DeleteCustomerUseCaseImplTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof IllegalStateException && "Database unavailable.".equals(error.getMessage()))
+            .assertError(error -> error instanceof IllegalStateException
+                    && "Database unavailable."
+                            .equals(error.getMessage()))
             .assertNotComplete();
   }
 }

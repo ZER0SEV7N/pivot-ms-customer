@@ -48,7 +48,7 @@ class RetrieveCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should stream all customers in order")
+  @DisplayName("Should stream all customers in order")
   void shouldStreamAllCustomers() {
     // Arrange
     Customer first = customer("customer-1", "12345678");
@@ -67,7 +67,7 @@ class RetrieveCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should stream an empty collection when there are no customers")
+  @DisplayName("Should stream an empty collection when there are no customers")
   void shouldStreamEmptyCollection() {
     // Arrange
     when(repositoryPort.findAll()).thenReturn(Flowable.empty());
@@ -83,7 +83,7 @@ class RetrieveCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should propagate the find all failure")
+  @DisplayName("Should propagate the find all failure")
   void shouldPropagateFindAllFailure() {
     // Arrange
     when(repositoryPort.findAll()).thenReturn(
@@ -100,7 +100,7 @@ class RetrieveCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should delegate the id lookup to the find by id use case")
+  @DisplayName("Should delegate the id lookup to the find by id use case")
   void shouldDelegateIdLookup() {
     // Arrange
     Customer customer = customer("customer-1", "12345678");
@@ -118,7 +118,7 @@ class RetrieveCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should return the customer found by document number")
+  @DisplayName("Should return the customer found by document number")
   void shouldReturnCustomerByDocumentNumber() {
     // Arrange
     Customer customer = customer("customer-1", "12345678");
@@ -135,7 +135,7 @@ class RetrieveCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should emit CustomerNotFoundException when the document number is not found")
+  @DisplayName("Should emit CustomerNotFoundException when the document number is not found")
   void shouldEmitNotFoundForDocumentNumber() {
     // Arrange
     when(repositoryPort.findByDocumentNumber("12345678")).thenReturn(Maybe.empty());
@@ -154,7 +154,7 @@ class RetrieveCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should propagate the document number lookup failure")
+  @DisplayName("Should propagate the document number lookup failure")
   void shouldPropagateDocumentNumberFailure() {
     // Arrange
     when(repositoryPort.findByDocumentNumber("12345678")).thenReturn(

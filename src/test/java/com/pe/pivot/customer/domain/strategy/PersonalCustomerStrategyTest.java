@@ -38,8 +38,11 @@ class PersonalCustomerStrategyTest {
             .build();
   }
 
+  /**
+   * Verifies that the strategy claims support for the PERSONAL customer type.
+   */
   @Test
-  @DisplayName("should support the PERSONAL customer type")
+  @DisplayName("Should support the PERSONAL customer type")
   void shouldSupportPersonalCustomerType() {
     // Act
     boolean supported = strategy.supports(CustomerType.PERSONAL);
@@ -48,8 +51,11 @@ class PersonalCustomerStrategyTest {
     assertTrue(supported);
   }
 
+  /**
+   * Verifies that the strategy does not claim support for the BUSINESS customer type.
+   */
   @Test
-  @DisplayName("should not support the BUSINESS customer type")
+  @DisplayName("Should not support the BUSINESS customer type")
   void shouldNotSupportBusinessCustomerType() {
     // Act
     boolean supported = strategy.supports(CustomerType.BUSINESS);
@@ -59,7 +65,7 @@ class PersonalCustomerStrategyTest {
   }
 
   @Test
-  @DisplayName("should validate a personal customer and normalize the document")
+  @DisplayName("Should validate a personal customer and normalize the document")
   void shouldValidateAndNormalizeDocument() {
     // Arrange
     Customer customer = personalCustomer();
@@ -77,7 +83,7 @@ class PersonalCustomerStrategyTest {
   }
 
   @Test
-  @DisplayName("should reject a personal customer registered with a RUC")
+  @DisplayName("Should reject a personal customer registered with a RUC")
   void shouldRejectRucDocumentType() {
     // Arrange
     Customer customer = personalCustomer();
@@ -89,12 +95,14 @@ class PersonalCustomerStrategyTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof BusinessRuleException && "Personal customers cannot be registered with RUC document type.".equals(error.getMessage()))
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Personal customers cannot be registered with RUC document type."
+                            .equals(error.getMessage()))
             .assertNotComplete();
   }
 
   @Test
-  @DisplayName("should reject a personal customer with a blank first name")
+  @DisplayName("Should reject a personal customer with a blank first name")
   void shouldRejectBlankFirstName() {
     // Arrange
     Customer customer = personalCustomer();
@@ -105,11 +113,13 @@ class PersonalCustomerStrategyTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof BusinessRuleException && "First name and last name are mandatory for PERSONAL customers.".equals(error.getMessage()));
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "First name and last name are mandatory for PERSONAL customers."
+                            .equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should reject a personal customer with a null last name")
+  @DisplayName("Should reject a personal customer with a null last name")
   void shouldRejectNullLastName() {
     // Arrange
     Customer customer = personalCustomer();
@@ -120,11 +130,13 @@ class PersonalCustomerStrategyTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof BusinessRuleException && "First name and last name are mandatory for PERSONAL customers.".equals(error.getMessage()));
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "First name and last name are mandatory for PERSONAL customers."
+                            .equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should reject a personal customer with a null first name")
+  @DisplayName("Should reject a personal customer with a null first name")
   void shouldRejectNullFirstName() {
     // Arrange
     Customer customer = personalCustomer();
@@ -141,7 +153,7 @@ class PersonalCustomerStrategyTest {
   }
 
   @Test
-  @DisplayName("should reject a personal customer with a blank last name")
+  @DisplayName("Should reject a personal customer with a blank last name")
   void shouldRejectBlankLastName() {
     // Arrange
     Customer customer = personalCustomer();
@@ -158,7 +170,7 @@ class PersonalCustomerStrategyTest {
   }
 
   @Test
-  @DisplayName("should reject a personal customer with a PYME profile")
+  @DisplayName("Should reject a personal customer with a PYME profile")
   void shouldRejectPymeProfile() {
     // Arrange
     Customer customer = personalCustomer();
@@ -169,11 +181,13 @@ class PersonalCustomerStrategyTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof BusinessRuleException && "Personal customers cannot have a PYME profile.".equals(error.getMessage()));
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Personal customers cannot have a PYME profile."
+                            .equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should reject a personal customer with an invalid document format")
+  @DisplayName("Should reject a personal customer with an invalid document format")
   void shouldRejectInvalidDocumentFormat() {
     // Arrange
     Customer customer = personalCustomer();

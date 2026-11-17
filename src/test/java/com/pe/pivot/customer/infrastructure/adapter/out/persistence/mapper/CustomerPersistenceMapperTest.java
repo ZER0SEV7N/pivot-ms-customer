@@ -28,7 +28,7 @@ class CustomerPersistenceMapperTest {
   }
 
   @Test
-  @DisplayName("should map a domain customer to a document")
+  @DisplayName("Should map a domain customer to a document")
   void shouldMapDomainToDocument() {
     // Arrange
     Instant createdAt = Instant.parse("2025-01-01T00:00:00Z");
@@ -71,7 +71,7 @@ class CustomerPersistenceMapperTest {
   }
 
   @Test
-  @DisplayName("should map a domain customer with null enums to a document")
+  @DisplayName("Should map a domain customer with null enums to a document")
   void shouldMapDomainWithNullEnumsToDocument() {
     // Arrange
     Customer customer = Customer.builder()
@@ -90,7 +90,7 @@ class CustomerPersistenceMapperTest {
   }
 
   @Test
-  @DisplayName("should map a document to a domain customer")
+  @DisplayName("Should map a document to a domain customer")
   void shouldMapDocumentToDomain() {
     // Arrange
     Instant createdAt = Instant.parse("2025-01-01T00:00:00Z");
@@ -133,7 +133,7 @@ class CustomerPersistenceMapperTest {
   }
 
   @Test
-  @DisplayName("should map a document with null enums to a domain customer")
+  @DisplayName("Should map a document with null enums to a domain customer")
   void shouldMapDocumentWithNullEnumsToDomain() {
     // Arrange
     CustomerDocument document = CustomerDocument.builder()

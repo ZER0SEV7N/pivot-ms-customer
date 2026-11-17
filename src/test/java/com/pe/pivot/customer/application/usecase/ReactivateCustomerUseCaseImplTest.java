@@ -51,7 +51,7 @@ class ReactivateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should reactivate an inactive customer")
+  @DisplayName("Should reactivate an inactive customer")
   void shouldReactivateInactiveCustomer() {
     // Arrange
     Customer customer = customerWithStatus(CustomerStatus.INACTIVE);
@@ -72,7 +72,7 @@ class ReactivateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should reactivate a blocked customer")
+  @DisplayName("Should reactivate a blocked customer")
   void shouldReactivateBlockedCustomer() {
     // Arrange
     Customer customer = customerWithStatus(CustomerStatus.BLOCKED);
@@ -91,7 +91,7 @@ class ReactivateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should reject reactivating an already active customer")
+  @DisplayName("Should reject reactivating an already active customer")
   void shouldRejectAlreadyActiveCustomer() {
     // Arrange
     Customer customer = customerWithStatus(CustomerStatus.ACTIVE);
@@ -103,13 +103,15 @@ class ReactivateCustomerUseCaseImplTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof BusinessRuleException && "Customer is already ACTIVE.".equals(error.getMessage()))
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Customer is already ACTIVE."
+                            .equals(error.getMessage()))
             .assertNotComplete();
     verify(repositoryPort, never()).save(any());
   }
 
   @Test
-  @DisplayName("should propagate the not found error")
+  @DisplayName("Should propagate the not found error")
   void shouldPropagateNotFoundError() {
     // Arrange
     when(findCustomerByIdUseCase.findById("missing")).thenReturn(
@@ -121,12 +123,14 @@ class ReactivateCustomerUseCaseImplTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof CustomerNotFoundException && "Customer not found with ID: missing".equals(error.getMessage()));
+            .assertError(error -> error instanceof CustomerNotFoundException
+                    && "Customer not found with ID: missing"
+                            .equals(error.getMessage()));
     verifyNoInteractions(repositoryPort);
   }
 
   @Test
-  @DisplayName("should propagate the persistence failure")
+  @DisplayName("Should propagate the persistence failure")
   void shouldPropagatePersistenceFailure() {
     // Arrange
     Customer customer = customerWithStatus(CustomerStatus.INACTIVE);
@@ -140,6 +144,8 @@ class ReactivateCustomerUseCaseImplTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof IllegalStateException && "Database unavailable.".equals(error.getMessage()));
+            .assertError(error -> error instanceof IllegalStateException
+                    && "Database unavailable."
+                            .equals(error.getMessage()));
   }
 }

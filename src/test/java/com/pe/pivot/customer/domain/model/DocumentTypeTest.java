@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 class DocumentTypeTest {
 
   @Test
-  @DisplayName("should validate and trim a DNI document number")
+  @DisplayName("Should validate and trim a DNI document number")
   void shouldValidateAndTrimDni() {
     // Arrange
     String documentNumber = " 12345678 ";
@@ -28,7 +28,7 @@ class DocumentTypeTest {
   }
 
   @Test
-  @DisplayName("should validate a CE document number")
+  @DisplayName("Should validate a CE document number")
   void shouldValidateCe() {
     // Arrange
     String documentNumber = "123456789";
@@ -41,7 +41,7 @@ class DocumentTypeTest {
   }
 
   @Test
-  @DisplayName("should validate and uppercase a passport number")
+  @DisplayName("Should validate and uppercase a passport number")
   void shouldValidateAndUppercasePassport() {
     // Arrange
     String documentNumber = "ab1234";
@@ -54,7 +54,7 @@ class DocumentTypeTest {
   }
 
   @Test
-  @DisplayName("should validate a RUC document number")
+  @DisplayName("Should validate a RUC document number")
   void shouldValidateRuc() {
     // Arrange
     String documentNumber = "20123456789";
@@ -67,7 +67,7 @@ class DocumentTypeTest {
   }
 
   @Test
-  @DisplayName("should reject an invalid DNI format")
+  @DisplayName("Should reject an invalid DNI format")
   void shouldRejectInvalidDni() {
     // Arrange
     String documentNumber = "1234";
@@ -81,7 +81,7 @@ class DocumentTypeTest {
   }
 
   @Test
-  @DisplayName("should reject an invalid CE format")
+  @DisplayName("Should reject an invalid CE format")
   void shouldRejectInvalidCe() {
     // Arrange
     String documentNumber = "12345678";
@@ -95,7 +95,7 @@ class DocumentTypeTest {
   }
 
   @Test
-  @DisplayName("should reject an invalid passport format")
+  @DisplayName("Should reject an invalid passport format")
   void shouldRejectInvalidPassport() {
     // Arrange
     String documentNumber = "ab12";
@@ -109,7 +109,7 @@ class DocumentTypeTest {
   }
 
   @Test
-  @DisplayName("should reject an invalid RUC format")
+  @DisplayName("Should reject an invalid RUC format")
   void shouldRejectInvalidRuc() {
     // Arrange
     String documentNumber = "2012345678";
@@ -123,7 +123,7 @@ class DocumentTypeTest {
   }
 
   @Test
-  @DisplayName("should reject a null document number")
+  @DisplayName("Should reject a null document number")
   void shouldRejectNullDocumentNumber() {
     // Act
     BusinessRuleException exception = assertThrows(BusinessRuleException.class,
@@ -134,7 +134,7 @@ class DocumentTypeTest {
   }
 
   @Test
-  @DisplayName("should expose all supported document types")
+  @DisplayName("Should expose all supported document types")
   void shouldExposeAllDocumentTypes() {
     // Arrange
     int expectedTypes = 4;

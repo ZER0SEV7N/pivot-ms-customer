@@ -17,7 +17,7 @@ class CustomerTest {
   private static final Instant UPDATED_AT = Instant.parse("2025-02-01T00:00:00Z");
 
   @Test
-  @DisplayName("should build a customer with all fields")
+  @DisplayName("Should build a customer with all fields")
   void shouldBuildCustomerWithAllFields() {
     // Arrange
     // Act
@@ -56,7 +56,7 @@ class CustomerTest {
   }
 
   @Test
-  @DisplayName("should set and get every field through the no-args constructor")
+  @DisplayName("Should set and get every field through the no-args constructor")
   void shouldSetAndGetEveryField() {
     // Arrange
     Customer customer = new Customer();
@@ -95,7 +95,7 @@ class CustomerTest {
   }
 
   @Test
-  @DisplayName("should create a customer through the all-args constructor")
+  @DisplayName("Should create a customer through the all-args constructor")
   void shouldCreateCustomerWithAllArgsConstructor() {
     // Arrange
     // Act

@@ -29,7 +29,7 @@ class CustomerWebMapperTest {
   }
 
   @Test
-  @DisplayName("should map a request record to a domain customer")
+  @DisplayName("Should map a request record to a domain customer")
   void shouldMapRequestToDomain() {
     // Arrange
     CustomerRequest request = CustomerRequest.builder()
@@ -67,7 +67,7 @@ class CustomerWebMapperTest {
   }
 
   @Test
-  @DisplayName("should map a domain customer to a response record")
+  @DisplayName("Should map a domain customer to a response record")
   void shouldMapDomainToResponse() {
     // Arrange
     Instant createdAt = Instant.parse("2025-01-01T00:00:00Z");
@@ -110,7 +110,7 @@ class CustomerWebMapperTest {
   }
 
   @Test
-  @DisplayName("should map a request with only mandatory fields")
+  @DisplayName("Should map a request with only mandatory fields")
   void shouldMapRequestWithOnlyMandatoryFields() {
     // Arrange
     CustomerRequest request = CustomerRequest.builder()

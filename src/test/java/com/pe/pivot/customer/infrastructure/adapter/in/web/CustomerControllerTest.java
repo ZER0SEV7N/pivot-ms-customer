@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.pe.pivot.customer.domain.exception.BusinessRuleException;
+import com.pe.pivot.customer.domain.exception.CustomerNotFoundException;
 import com.pe.pivot.customer.domain.model.Customer;
 import com.pe.pivot.customer.domain.model.CustomerProfile;
 import com.pe.pivot.customer.domain.model.CustomerStatus;
@@ -100,7 +101,7 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("should create a customer and return the mapped response")
+  @DisplayName("Should create a customer and return the mapped response")
   void shouldCreateCustomer() {
     // Arrange
     Customer customer = customer();
@@ -125,7 +126,7 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("should propagate the creation error")
+  @DisplayName("Should propagate the creation error")
   void shouldPropagateCreationError() {
     // Arrange
     when(createCustomerUseCase.create(any(Customer.class))).thenReturn(
@@ -137,11 +138,13 @@ class CustomerControllerTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof BusinessRuleException && "Invalid customer.".equals(error.getMessage()));
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Invalid customer."
+                            .equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should retrieve all customers mapped to responses")
+  @DisplayName("Should retrieve all customers mapped to responses")
   void shouldRetrieveAllCustomers() {
     // Arrange
     Customer first = customer();
@@ -162,7 +165,7 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("should retrieve a customer by id")
+  @DisplayName("Should retrieve a customer by id")
   void shouldRetrieveCustomerById() {
     // Arrange
     Customer customer = customer();
@@ -184,7 +187,7 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("should propagate the not found error when retrieving by id")
+  @DisplayName("Should propagate the not found error when retrieving by id")
   void shouldPropagateNotFoundById() {
     // Arrange
     when(retrieveCustomerUseCase.findById("missing")).thenReturn(
@@ -197,11 +200,12 @@ class CustomerControllerTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof com.pe.pivot.customer.domain.exception.CustomerNotFoundException && "Customer not found with ID: missing".equals(error.getMessage()));
+            .assertError(error -> error instanceof CustomerNotFoundException
+                    && "Customer not found with ID: missing".equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should retrieve a customer by document number")
+  @DisplayName("Should retrieve a customer by document number")
   void shouldRetrieveCustomerByDocumentNumber() {
     // Arrange
     Customer customer = customer();
@@ -225,7 +229,7 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("should update a customer and return the mapped response")
+  @DisplayName("Should update a customer and return the mapped response")
   void shouldUpdateCustomer() {
     // Arrange
     Customer updated = customer();
@@ -251,7 +255,7 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("should delete a customer and complete")
+  @DisplayName("Should delete a customer and complete")
   void shouldDeleteCustomer() {
     // Arrange
     when(deleteCustomerUseCase.delete("customer-1")).thenReturn(Completable.complete());
@@ -267,7 +271,7 @@ class CustomerControllerTest {
   }
 
   @Test
-  @DisplayName("should propagate the delete error")
+  @DisplayName("Should propagate the delete error")
   void shouldPropagateDeleteError() {
     // Arrange
     when(deleteCustomerUseCase.delete("customer-1")).thenReturn(
@@ -278,11 +282,13 @@ class CustomerControllerTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof BusinessRuleException && "Customer is already INACTIVE.".equals(error.getMessage()));
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Customer is already INACTIVE."
+                            .equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should reactivate a customer and return the mapped response")
+  @DisplayName("Should reactivate a customer and return the mapped response")
   void shouldReactivateCustomer() {
     // Arrange
     Customer reactivated = customer();

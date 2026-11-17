@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class CustomerEnumsTest {
 
   @Test
-  @DisplayName("should expose all customer types")
+  @DisplayName("Should expose all customer types")
   void shouldExposeAllCustomerTypes() {
     // Arrange
     int expectedTypes = 2;
@@ -26,7 +26,7 @@ class CustomerEnumsTest {
   }
 
   @Test
-  @DisplayName("should expose all customer statuses")
+  @DisplayName("Should expose all customer statuses")
   void shouldExposeAllCustomerStatuses() {
     // Arrange
     int expectedStatuses = 3;
@@ -40,7 +40,7 @@ class CustomerEnumsTest {
   }
 
   @Test
-  @DisplayName("should expose all customer profiles")
+  @DisplayName("Should expose all customer profiles")
   void shouldExposeAllCustomerProfiles() {
     // Arrange
     int expectedProfiles = 3;

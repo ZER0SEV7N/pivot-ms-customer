@@ -23,7 +23,7 @@ class StrategyConfigTest {
   }
 
   @Test
-  @DisplayName("should create the personal customer strategy bean")
+  @DisplayName("Should create the personal customer strategy bean")
   void shouldCreatePersonalStrategyBean() {
     // Act
     CustomerValidationStrategy strategy = config.personalCustomerStrategy();
@@ -33,7 +33,7 @@ class StrategyConfigTest {
   }
 
   @Test
-  @DisplayName("should create the business customer strategy bean")
+  @DisplayName("Should create the business customer strategy bean")
   void shouldCreateBusinessStrategyBean() {
     // Act
     CustomerValidationStrategy strategy = config.businessCustomerStrategy();

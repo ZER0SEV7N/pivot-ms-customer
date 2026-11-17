@@ -14,12 +14,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
+import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
-import org.springframework.mock.web.server.MockServerWebExchange;
 
 /**
  * Unit tests for {@link GlobalExceptionHandler}.
@@ -50,7 +50,7 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  @DisplayName("should return 404 when the customer is not found")
+  @DisplayName("Should return 404 when the customer is not found")
   void shouldReturnNotFound() {
     // Arrange
     CustomerNotFoundException exception =
@@ -71,7 +71,7 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  @DisplayName("should return 409 when the customer is duplicated")
+  @DisplayName("Should return 409 when the customer is duplicated")
   void shouldReturnConflict() {
     // Arrange
     DuplicateCustomerException exception =
@@ -92,7 +92,7 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  @DisplayName("should return 400 when a business rule is violated")
+  @DisplayName("Should return 400 when a business rule is violated")
   void shouldReturnBadRequestForBusinessRule() {
     // Arrange
     BusinessRuleException exception = new BusinessRuleException("Invalid business rule.");
@@ -113,7 +113,7 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  @DisplayName("should return 400 with joined messages when payload validation fails")
+  @DisplayName("Should return 400 with joined messages when payload validation fails")
   void shouldReturnBadRequestForValidationErrors() {
     // Arrange
     BeanPropertyBindingResult bindingResult =
@@ -147,7 +147,7 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  @DisplayName("should return 500 when an unexpected error occurs")
+  @DisplayName("Should return 500 when an unexpected error occurs")
   void shouldReturnInternalServerError() {
     // Arrange
     Exception exception = new RuntimeException("Unexpected failure.");

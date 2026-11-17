@@ -55,7 +55,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should save a customer and return the persisted domain object")
+  @DisplayName("Should save a customer and return the persisted domain object")
   void shouldSaveCustomer() {
     // Arrange
     Customer domain = customer("customer-1");
@@ -77,7 +77,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should propagate the save failure")
+  @DisplayName("Should propagate the save failure")
   void shouldPropagateSaveFailure() {
     // Arrange
     Customer domain = customer("customer-1");
@@ -92,11 +92,13 @@ class CustomerPersistenceAdapterTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof IllegalStateException && "Database unavailable.".equals(error.getMessage()));
+            .assertError(error -> error instanceof IllegalStateException
+                    && "Database unavailable."
+                            .equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should stream all customers from the database")
+  @DisplayName("Should stream all customers from the database")
   void shouldFindAllCustomers() {
     // Arrange
     CustomerDocument firstDocument = document("customer-1");
@@ -119,7 +121,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should stream an empty result when the database has no customers")
+  @DisplayName("Should stream an empty result when the database has no customers")
   void shouldFindAllReturnEmpty() {
     // Arrange
     when(mongoRepository.findAll()).thenReturn(Flux.empty());
@@ -135,7 +137,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should propagate the find all failure")
+  @DisplayName("Should propagate the find all failure")
   void shouldPropagateFindAllFailure() {
     // Arrange
     when(mongoRepository.findAll()).thenReturn(
@@ -152,7 +154,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should find a customer by id")
+  @DisplayName("Should find a customer by id")
   void shouldFindById() {
     // Arrange
     CustomerDocument entity = document("customer-1");
@@ -171,7 +173,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should complete empty when the id does not exist")
+  @DisplayName("Should complete empty when the id does not exist")
   void shouldFindByIdReturnEmpty() {
     // Arrange
     when(mongoRepository.findById("missing")).thenReturn(Mono.empty());
@@ -187,7 +189,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should find a customer by document number")
+  @DisplayName("Should find a customer by document number")
   void shouldFindByDocumentNumber() {
     // Arrange
     CustomerDocument entity = document("customer-1");
@@ -206,7 +208,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should complete empty when the document number does not exist")
+  @DisplayName("Should complete empty when the document number does not exist")
   void shouldFindByDocumentNumberReturnEmpty() {
     // Arrange
     when(mongoRepository.findByDocumentNumber("12345678")).thenReturn(Mono.empty());
@@ -222,7 +224,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should report whether a document number exists")
+  @DisplayName("Should report whether a document number exists")
   void shouldCheckExistenceByDocumentNumber() {
     // Arrange
     when(mongoRepository.existsByDocumentNumber("12345678")).thenReturn(Mono.just(true));
@@ -238,7 +240,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should delete a customer by id")
+  @DisplayName("Should delete a customer by id")
   void shouldDeleteById() {
     // Arrange
     when(mongoRepository.deleteById("customer-1")).thenReturn(Mono.empty());
@@ -254,7 +256,7 @@ class CustomerPersistenceAdapterTest {
   }
 
   @Test
-  @DisplayName("should propagate the delete failure")
+  @DisplayName("Should propagate the delete failure")
   void shouldPropagateDeleteFailure() {
     // Arrange
     when(mongoRepository.deleteById("customer-1")).thenReturn(
@@ -265,7 +267,9 @@ class CustomerPersistenceAdapterTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof IllegalStateException && "Database unavailable.".equals(error.getMessage()))
+            .assertError(error -> error instanceof IllegalStateException
+                    && "Database unavailable."
+                            .equals(error.getMessage()))
             .assertNotComplete();
   }
 }

@@ -72,7 +72,7 @@ class UpdateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should update every non-null field of an existing customer")
+  @DisplayName("Should update every non-null field of an existing customer")
   void shouldUpdateEveryNonNullField() {
     // Arrange
     Customer existing = existingCustomer();
@@ -119,7 +119,7 @@ class UpdateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should keep the existing fields when the request sends null values")
+  @DisplayName("Should keep the existing fields when the request sends null values")
   void shouldKeepFieldsWhenIncomingValuesAreNull() {
     // Arrange
     Customer existing = existingCustomer();
@@ -154,7 +154,7 @@ class UpdateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should reject an unsupported customer type")
+  @DisplayName("Should reject an unsupported customer type")
   void shouldRejectUnsupportedCustomerType() {
     // Arrange
     Customer incoming = Customer.builder()
@@ -175,7 +175,7 @@ class UpdateCustomerUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should propagate the validation strategy failure")
+  @DisplayName("Should propagate the validation strategy failure")
   void shouldPropagateValidationFailure() {
     // Arrange
     Customer incoming = Customer.builder()
@@ -192,12 +192,14 @@ class UpdateCustomerUseCaseImplTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof BusinessRuleException && "Invalid personal data.".equals(error.getMessage()));
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Invalid personal data."
+                            .equals(error.getMessage()));
     verify(repositoryPort, never()).save(any());
   }
 
   @Test
-  @DisplayName("should propagate the not found error")
+  @DisplayName("Should propagate the not found error")
   void shouldPropagateNotFoundError() {
     // Arrange
     Customer incoming = Customer.builder()
@@ -215,12 +217,14 @@ class UpdateCustomerUseCaseImplTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof CustomerNotFoundException && "Customer not found with ID: missing".equals(error.getMessage()));
+            .assertError(error -> error instanceof CustomerNotFoundException
+                    && "Customer not found with ID: missing"
+                            .equals(error.getMessage()));
     verifyNoInteractions(repositoryPort);
   }
 
   @Test
-  @DisplayName("should propagate the persistence failure")
+  @DisplayName("Should propagate the persistence failure")
   void shouldPropagatePersistenceFailure() {
     // Arrange
     Customer existing = existingCustomer();
@@ -240,11 +244,13 @@ class UpdateCustomerUseCaseImplTest {
     // Assert
     result.test()
             .assertValueCount(0)
-            .assertError(error -> error instanceof IllegalStateException && "Database unavailable.".equals(error.getMessage()));
+            .assertError(error -> error instanceof IllegalStateException
+                    && "Database unavailable."
+                            .equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should validate before looking up the customer")
+  @DisplayName("Should validate before looking up the customer")
   void shouldValidateBeforeLookingUp() {
     // Arrange
     Customer incoming = Customer.builder()

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class DataMaskingUtilTest {
 
   @Test
-  @DisplayName("should mask a standard document number keeping the last four characters")
+  @DisplayName("Should mask a standard document number keeping the last four characters")
   void shouldMaskStandardDocumentNumber() {
     // Arrange
     String documentNumber = "12345678";
@@ -25,7 +25,7 @@ class DataMaskingUtilTest {
   }
 
   @Test
-  @DisplayName("should mask a long document number keeping the last four characters")
+  @DisplayName("Should mask a long document number keeping the last four characters")
   void shouldMaskLongDocumentNumber() {
     // Arrange
     String documentNumber = "20123456789";
@@ -39,7 +39,7 @@ class DataMaskingUtilTest {
   }
 
   @Test
-  @DisplayName("should fully mask a document number with exactly four characters")
+  @DisplayName("Should fully mask a document number with exactly four characters")
   void shouldMaskFourCharacterDocumentNumber() {
     // Arrange
     String documentNumber = "1234";
@@ -52,7 +52,7 @@ class DataMaskingUtilTest {
   }
 
   @Test
-  @DisplayName("should fully mask a short document number")
+  @DisplayName("Should fully mask a short document number")
   void shouldMaskShortDocumentNumber() {
     // Arrange
     String documentNumber = "123";
@@ -65,7 +65,7 @@ class DataMaskingUtilTest {
   }
 
   @Test
-  @DisplayName("should fully mask a null document number")
+  @DisplayName("Should fully mask a null document number")
   void shouldMaskNullDocumentNumber() {
     // Act
     String result = DataMaskingUtil.maskDocument(null);

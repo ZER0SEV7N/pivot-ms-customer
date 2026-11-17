@@ -36,8 +36,11 @@ class BusinessCustomerStrategyTest {
             .build();
   }
 
+  /**
+   * Verifies that the strategy claims support for the BUSINESS customer type.
+   */
   @Test
-  @DisplayName("should support the BUSINESS customer type")
+  @DisplayName("Should support the BUSINESS customer type")
   void shouldSupportBusinessCustomerType() {
     // Act
     boolean supported = strategy.supports(CustomerType.BUSINESS);
@@ -46,8 +49,11 @@ class BusinessCustomerStrategyTest {
     assertTrue(supported);
   }
 
+  /**
+   * Verifies that the strategy does not claim support for the PERSONAL customer type.
+   */
   @Test
-  @DisplayName("should not support the PERSONAL customer type")
+  @DisplayName("Should not support the PERSONAL customer type")
   void shouldNotSupportPersonalCustomerType() {
     // Act
     boolean supported = strategy.supports(CustomerType.PERSONAL);
@@ -57,7 +63,7 @@ class BusinessCustomerStrategyTest {
   }
 
   @Test
-  @DisplayName("should validate a business customer and normalize the document")
+  @DisplayName("Should validate a business customer and normalize the document")
   void shouldValidateAndNormalizeDocument() {
     // Arrange
     Customer customer = businessCustomer();
@@ -74,7 +80,7 @@ class BusinessCustomerStrategyTest {
   }
 
   @Test
-  @DisplayName("should reject a business customer registered without a RUC")
+  @DisplayName("Should reject a business customer registered without a RUC")
   void shouldRejectNonRucDocumentType() {
     // Arrange
     Customer customer = businessCustomer();
@@ -86,12 +92,14 @@ class BusinessCustomerStrategyTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof BusinessRuleException && "Business customers must be registered with a RUC document type.".equals(error.getMessage()))
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Business customers must be registered with a RUC document type."
+                            .equals(error.getMessage()))
             .assertNotComplete();
   }
 
   @Test
-  @DisplayName("should reject a business customer with a null business name")
+  @DisplayName("Should reject a business customer with a null business name")
   void shouldRejectNullBusinessName() {
     // Arrange
     Customer customer = businessCustomer();
@@ -102,11 +110,13 @@ class BusinessCustomerStrategyTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof BusinessRuleException && "Business name (Razon Social) is mandatory for BUSINESS customers.".equals(error.getMessage()));
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Business name (Razon Social) is mandatory for BUSINESS customers."
+                            .equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should reject a business customer with a blank business name")
+  @DisplayName("Should reject a business customer with a blank business name")
   void shouldRejectBlankBusinessName() {
     // Arrange
     Customer customer = businessCustomer();
@@ -117,11 +127,13 @@ class BusinessCustomerStrategyTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof BusinessRuleException && "Business name (Razon Social) is mandatory for BUSINESS customers.".equals(error.getMessage()));
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Business name (Razon Social) is mandatory for BUSINESS customers."
+                            .equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should reject a business customer with a VIP profile")
+  @DisplayName("Should reject a business customer with a VIP profile")
   void shouldRejectVipProfile() {
     // Arrange
     Customer customer = businessCustomer();
@@ -132,11 +144,13 @@ class BusinessCustomerStrategyTest {
 
     // Assert
     result.test()
-            .assertError(error -> error instanceof BusinessRuleException && "Business customers cannot have a VIP profile.".equals(error.getMessage()));
+            .assertError(error -> error instanceof BusinessRuleException
+                    && "Business customers cannot have a VIP profile."
+                            .equals(error.getMessage()));
   }
 
   @Test
-  @DisplayName("should reject a business customer with an invalid RUC format")
+  @DisplayName("Should reject a business customer with an invalid RUC format")
   void shouldRejectInvalidRucFormat() {
     // Arrange
     Customer customer = businessCustomer();

@@ -34,7 +34,7 @@ class FindCustomerByIdUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should return the customer when it exists")
+  @DisplayName("Should return the customer when it exists")
   void shouldReturnExistingCustomer() {
     // Arrange
     Customer customer = Customer.builder()
@@ -55,7 +55,7 @@ class FindCustomerByIdUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should emit CustomerNotFoundException when the customer does not exist")
+  @DisplayName("Should emit CustomerNotFoundException when the customer does not exist")
   void shouldEmitNotFoundWhenCustomerDoesNotExist() {
     // Arrange
     when(repositoryPort.findById("missing")).thenReturn(Maybe.empty());
@@ -72,7 +72,7 @@ class FindCustomerByIdUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should propagate the persistence failure")
+  @DisplayName("Should propagate the persistence failure")
   void shouldPropagatePersistenceFailure() {
     // Arrange
     when(repositoryPort.findById("customer-1")).thenReturn(
@@ -88,7 +88,7 @@ class FindCustomerByIdUseCaseImplTest {
   }
 
   @Test
-  @DisplayName("should expose the not found message as a plain business error")
+  @DisplayName("Should expose the not found message as a plain business error")
   void shouldExposeNotFoundMessage() {
     // Arrange
     when(repositoryPort.findById("missing")).thenReturn(Maybe.empty());
